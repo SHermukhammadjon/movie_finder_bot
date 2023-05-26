@@ -6,12 +6,14 @@ from random import randint
 from Google import search_movi
 from PyMemory import load_movi_data, RAM
 from login import BOT_API_TOKEN, CHANEL_ID, ADMIN_ID, DEFOLT_CODE
-
+from buttons import Buttons
 
 database = Database('database.db')
 database.conect()
 ram = RAM(db = database)
 ram.load_users()
+
+buttons = Buttons()
 
 def admin(update, context):
     id = update.message.chat.id
@@ -28,7 +30,10 @@ def start_function(update, context):
     id = update.message.chat.id
     name = update.message.chat.first_name
     if ram.check_user(user_id = id):
-        update.message.reply_text(f"{name} sizni ko'rib turganimdan xursandman!")
+        update.message.reply_text(text = "Bosh menu:", 
+                                  reply_markup = ReplyKeyboardMarkup(buttons.get_head(mode='user'), resize_keyboard = True, one_time_keyboard = True))
+    elif ram.check_admin(id = id):
+        update.message.reply_text(f"{name} siz adminsiz!")
     else:
         update.message.reply_text(f"Assalomu alaykum{name} xush kelibsi!")
         database.add_user(user_id = id, user_name = name)
@@ -44,14 +49,15 @@ def core_function(update, context):
             if action == 'admin_login':
                 count = ram.block_user(user_id = id, count = True)
                 if message == DEFOLT_CODE and count < 3:
-                    update.message.reply_text(f"{name} xush kelibsiz!")
+                    update.message.reply_text(f"{name} xush kelibsiz! Siz endi adminsiz.")
+                    ram.update_action(user_id=id, action = 'none')
                 elif count > 3:
                     update.message.reply_text(f"{name} siz blo'klandingiz, keyinroq urinib ko'ring.")
                     ram.update_action(user_id=id, action = 'none')
                 else:
                     update.message.reply_text("Notog'ri paro'l !")
                     ram.block_user(user_id = id)
-             
+            
             else:
                 pass
 

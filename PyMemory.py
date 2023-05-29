@@ -47,9 +47,10 @@ class RAM:
             self.users_code[user_id] = str(randint(1000, 9999))
             return self.users_code[user_id]
 
-    def load_users(self):
+    def load_data(self):
         try:
             self.users_data = self.db.get_users()
+            self.admin_data = self.db.get_admins()
             return True
         except:
             return False
@@ -59,9 +60,15 @@ class RAM:
             return True
         return False
 
-    def add_user(self, id = None, name = None, lang = 'uz'):
-        self.users_data[id] = {'name' : name, 'lang' : lang, 'where' : 'head_menu', 'action' : 'none'}
+    def add_user(self, id = None, name = None, registred_time = None, lang = 'uz'):
+        self.users_data[id] = {'name' : name, 'lang' : lang, 'where' : 'head_menu', 'action' : 'none', 'registred' : registred_time}
         return True
+    
+    def remove_user(self, id = None):
+        if self.users_data.get(id):
+            del self.users_data[id]
+            return True
+        return False     
     
     def check_admin(self, id = None):
         if self.admin_data.get(id):
@@ -69,17 +76,36 @@ class RAM:
         else:
             return False
     
+    def add_admin(self, id = None, name = None, registred_time = None, lang = 'uz', ):
+        self.admin_data[id] = {'name' : name, 'lang' : lang, 'where' : 'head_menu', 'action' : 'none', 'registred' : registred_time}
+        # del self.users_data[id]
+        return True
+    
     def get_action(self, user_id = None):
         return self.users_data[user_id]['action']
     
     def wher_user(self, user_id = None):
         return self.users_data[user_id]['where']
 
-    def update_action(self, user_id = None, action = 'none'):
+    def update_user_action(self, user_id = None, action = 'none'):
         self.users_data[user_id]['action'] = action
     
     def update_user_loc(self, user_id = None, where = 'head_menu'):
-        self.users_data[user_id]['where'] = where
+        self.users_data[user_id]['where'] = where 
+
+    def get_user(self, user_id = None):
+        return self.users_data[user_id]
+    
+    def get_admin(self, id = None):
+        return self.admin_data[id]
+
+    def update_user(self, id = None, user_data = None):
+        self.users_data[id] = user_data
+        return True
+    
+    def update_admin(self, id = None, admin_data = None):
+        self.admin_data[id] = admin_data
+        return True
 
 
 if __name__ == "__main__":

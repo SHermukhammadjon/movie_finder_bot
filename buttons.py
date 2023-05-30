@@ -47,4 +47,21 @@ class Buttons:
                    [KeyboardButton(text = "🔥 Primyeralarni taxrirlash"), KeyboardButton(text = "🧩 Yangi medialarga   ishlov berish")],
                     [KeyboardButton(text = "⬅️ Orqaga")]]
         return buttons
+    
+    def add_movi(self, mode = 'none'):
+        if mode == 'none':
+            buttons = [[KeyboardButton(text = "♻️ Avtomatik"), KeyboardButton(text = "👊 Qo'lda")],
+                       [KeyboardButton(text = "👷🏻‍♂️ Kinolarga ishlov berish")],
+                       [KeyboardButton(text = "⬅️ Orqaga"), KeyboardButton(text = "🏠 Bosh sahifa")]]
+            return buttons 
+        if mode == 'avto':
+            buttons = [[KeyboardButton(text = "♻️ Avtomatik 🔵"), KeyboardButton(text = "👊 Qo'lda")],
+                       [KeyboardButton(text = "👷🏻‍♂️ Kinolarga ishlov berish")],
+                       [KeyboardButton(text = "⬅️ Orqaga"), KeyboardButton(text = "🏠 Bosh sahifa")]]
+            return buttons
+        if mode == 'hend':
+            buttons = [[KeyboardButton(text = "♻️ Avtomatik"), KeyboardButton(text = "👊 Qo'lda 🔵")],
+                       [KeyboardButton(text = "👷🏻‍♂️ Kinolarga ishlov berish")],
+                       [KeyboardButton(text = "⬅️ Orqaga"), KeyboardButton(text = "🏠 Bosh sahifa")]]
+            return buttons 
         

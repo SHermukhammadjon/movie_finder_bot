@@ -8,6 +8,8 @@ from PyMemory import load_movi_data, RAM
 from login import BOT_API_TOKEN, CHANEL_ID, ADMIN_ID, DEFOLT_CODE
 from buttons import Buttons
 from picsum import now
+# from extractor import video_extractor
+from admin import admin_core
 
 database = Database('database.db')
 database.conect()
@@ -43,6 +45,7 @@ def admin(update, context):
 def start_function(update, context):
     id = update.message.chat.id
     name = update.message.chat.first_name
+    print(update.message)
     if ram.check_user(user_id = id):
         user_data = ram.get_user(user_id = id)
         update.message.reply_text(
@@ -60,14 +63,14 @@ def start_function(update, context):
                                   reply_markup = ReplyKeyboardMarkup(buttons.get_menu(mode = 'admin'), 
                                   resize_keyboard = True, 
                                   one_time_keyboard = True))
-    print(ram.check_admin(id = id))
-    # else:
-    #     date = now()
-    #     update.message.reply_text(text = f"Ro'yxatdan o'tilgan vaxt: {date}\nAssalomu alaykum{name} xush kelibsi!",
-    #                               reply_markup = InlineKeyboardMarkup(buttons.get_headin(mode='user')))
+    # print(ram.check_admin(id = id))
+    else:
+        date = now()
+        update.message.reply_text(text = f"Ro'yxatdan o'tilgan vaxt: {date}\nAssalomu alaykum{name} xush kelibsi!",
+                                  reply_markup = InlineKeyboardMarkup(buttons.get_headin(mode='user')))
         
-    #     database.add_user(user_id = id, user_name = name, registr_time = date)
-    #     ram.add_user(id = id, name=name, registred_time = date)
+        database.add_user(user_id = id, user_name = name, registr_time = date)
+        ram.add_user(id = id, name=name, registred_time = date)
 
 def core_function(update, context):
     id = update.message.chat.id
@@ -99,50 +102,16 @@ def core_function(update, context):
             
             if message == "🔍 Kino izlash":
                 update.message.reply_text(text = "Kino izlash")
+        elif where == 'none':
+            update.message.reply_text(text = 'Bosh menu', reply_markup = ReplyKeyboardMarkup(buttons.get_headin(mode='user')))
+            admin_data['where'] = 'head_menu'
+            ram.update_admin(id = id, admin_data = admin_data)
 
         # update.message.reply_text(f"{name} is user !")
     
     elif ram.check_admin(id = id):
-        admin_data = ram.get_admin(id = id) 
-        where = admin_data['where']
-        name = admin_data['name']
-        date = admin_data['registred']
- 
-        if where == 'head_menu':
-            if message == "🎛 Menu":
-                update.message.reply_text(f"Ro'yxatdan o'tilgan vaxt: {date}\n🍿 Menu:",
-                                  reply_markup = InlineKeyboardMarkup(buttons.get_headin(mode = 'admin')))
-            elif message == "📂 Media":
-                update.message.reply_text(text = "Media menusi:",
-                                          reply_markup = ReplyKeyboardMarkup(buttons.media(),
-                                                                             resize_keyboard = True,
-                                                                             one_time_keyboard = True))
-                admin_data['where'] = 'media'
-                ram.update_admin(id = id, admin_data = admin_data)
-        
-        elif where == 'media':
-            if message == "⬅️ Orqaga":
-                update.message.reply_text('Admin panel:',
-                                  reply_markup = ReplyKeyboardMarkup(buttons.get_menu(mode = 'admin'), 
-                                  resize_keyboard = True, 
-                                  one_time_keyboard = True))
-                admin_data['where'] = 'head_menu'
-                ram.update_admin(id = id, admin_data = admin_data)
-            elif message == "🎬 Kino qo'shish":
-                update.message.reply_text('Qaysi usul bilan kino qo\'shmoqchisiz?',
-                                  reply_markup = InlineKeyboardMarkup(buttons.get_menu(mode = 'admin')))
-                admin_data['where'] = 'head_menu'
-                ram.update_admin(id = id, admin_data = admin_data)
-
-
-        elif where == 'none':
-            update.message.reply_text('Admin panel:',
-                                  reply_markup = ReplyKeyboardMarkup(buttons.get_menu(mode = 'admin'), 
-                                  resize_keyboard = True, 
-                                  one_time_keyboard = True))
-            admin_data['where'] = 'head_menu'
-            ram.update_admin(id = id, admin_data = admin_data)
-
+        admin_core(update, context, ram = ram, buttons=buttons)
+    
     else:
         update.message.reply_text(f"Assalomu alaykum{name} xush kelibsi!")
         database.add_user(user_id = id, user_name = name)
@@ -150,7 +119,48 @@ def core_function(update, context):
 
 n = 0
 def video_handler(update, context):
-    pass
+    if ram.check_admin(id = id):
+        admin_data = ram.get_admin(id = id) 
+        where = admin_data['where']
+        action = admin_data['action']
+        name = admin_data['name']
+        date = admin_data['registred']
+        global n
+        if where == 'add_movi':
+            if action == 'avto_add':
+                n+=1
+                
+        
+    # global n
+    # n+=1
+    # user_id = update.message.chat.id
+    # if n == 20:
+    #     n = 0
+    #     sleep = randint(40, 120)
+        
+    #     print(f"sleep {sleep} second...")
+    #     time.sleep(sleep)
+    # if user_id in ADMINS:
+    #     try:
+    #         video = update.message.video
+    #         if int(video.file_size / (1024*1024)) > 100:
+    #             caption = update.message.caption
+    #             vm_info = context.bot.send_video(CHANEL_ID, video, caption = caption)
+
+    #             message_id = vm_info.message_id
+    #             file_size = vm_info.video.file_size
+    #             file_id = vm_info.video.file_id
+    #             database.add_movi(caption, file_id = file_id, size = file_size, message_id = message_id)
+    #             thumb_file = context.bot.get_file(video.thumb.file_id)
+    #             thumb_file.download(f"photos/{message_id}.jpg")
+    #             print(video.thumb.file_id)
+    #             # update.message.reply_photo(open('thumbnail.jpg', 'rb'))
+    #             # print(vm_info)
+    #         else:
+    #             update.message.reply_text("The video size is smoller then 100 Mb")
+    #             print("! The video size is smoller then 100 Mb ")
+    #     except:
+    #         print('Video handler EROR ...')
 
 titles, movies_dataset, line_count = load_movi_data()
 
@@ -206,7 +216,7 @@ def inlen_core(update, context):
             query.message.edit_reply_markup(reply_markup = InlineKeyboardMarkup(buttons.get_headin_more(mode='admin')))
         elif data == 'less':
             query.message.edit_reply_markup(reply_markup = InlineKeyboardMarkup(buttons.get_headin(mode='admin')))
-    
+   
 def main():
     updater = Updater(token = BOT_API_TOKEN)
     dispatcher = updater.dispatcher

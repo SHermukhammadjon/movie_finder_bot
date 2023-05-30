@@ -24,7 +24,7 @@ def video_handler(update, context):
     user_id = update.message.chat.id
     if n == 20:
         n = 0
-        sleep = randint(30, 120)
+        sleep = randint(40, 120)
         
         print(f"sleep {sleep} second...")
         time.sleep(sleep)

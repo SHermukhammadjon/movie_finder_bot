@@ -5,17 +5,22 @@ class Database:
     def __init__(self, file_name):
         self.name = file_name
 
-    def conect(self, movies_tb = 'movies_data', user_tb = 'users_data', admin_tb = 'admins_data'):
+    def conect(self, movies_tb = 'movies_data', user_tb = 'users_data', admin_tb = 'admins_data', movies_note = "movies_note"):
         """
         """
         self.movies = movies_tb
         self.users = user_tb
+        
         self.admin = admin_tb
+        self.m_note = movies_note
 
         conection = sqlite3.connect(self.name)
         cursor = conection.cursor()
         
-        cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.movies} ('message_id' INTEGER, 'file_id', 'caption', 'file_size' INTEGER, 'id' INTEGER PRIMARY KEY);")
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.movies} ('id' INTEGER PRIMARY KEY, 'file_id', 'title', 'caption', 'file_size' INTEGER );")
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.m_note} ('id' INTEGER PRIMARY KEY, 'file_id', 'caption', 'file_size' INTEGER);")
+
+        
         cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.users} ('user_id' INTEGER , 'user_name', 'lang', 'registred');")
         cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.admin} ('id' INTEGER , 'name', 'lang', 'registred');")
 
@@ -23,22 +28,25 @@ class Database:
         conection.close()
         print(f"database sucsesfuly conected...")
 
-    def add_movi(self, caption, message_id = None, size = 0, file_id = None):
-        """
-            caption : str
-            message_id : int
-            size : int
-            file_id : str
+    def add_movi_note(self, caption, movie_id = None, size = 0, file_id = None):
+        """_summary_
+
+        Args:
+            caption (_type_): _description_
+            movie_id (_type_, optional): _description_. Defaults to None.
+            size (int, optional): _description_. Defaults to 0.
+            file_id (_type_, optional): _description_. Defaults to None.
         """
         conection = sqlite3.connect(self.name)
         cursor = conection.cursor()
 
         try:
             caption = caption.replace('"', "\'")
-            cursor.execute(f"INSERT INTO {self.movies} ('message_id', 'file_id', 'caption', 'file_size') VALUES ({message_id}, '{file_id}', \"{caption}\", {size});")
+            match = f"INSERT INTO {self.m_note} ('id', 'file_id', 'caption', 'file_size') VALUES ({movie_id}, {file_id}, '{caption}', '{file_id}');)"
+            cursor.execute(match)
             print("New movi added ...")
         except:
-            print("Datbase Error ...")
+            print("Can't added {movie_id} ...")
         
         conection.commit()
         conection.close()

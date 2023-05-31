@@ -10,6 +10,7 @@ from buttons import Buttons
 from picsum import now
 # from extractor import video_extractor
 from admin import admin_core
+import asyncio
 
 database = Database('database.db')
 database.conect()
@@ -63,7 +64,7 @@ def start_function(update, context):
                                   reply_markup = ReplyKeyboardMarkup(buttons.get_menu(mode = 'admin'), 
                                   resize_keyboard = True, 
                                   one_time_keyboard = True))
-    # print(ram.check_admin(id = id))
+        
     else:
         date = now()
         update.message.reply_text(text = f"Ro'yxatdan o'tilgan vaxt: {date}\nAssalomu alaykum{name} xush kelibsi!",
@@ -117,19 +118,29 @@ def core_function(update, context):
         database.add_user(user_id = id, user_name = name)
         ram.add_user(id = id, name=name)
 
+async def video_adder(update, contex):
+    print(10)
+
 n = 0
 def video_handler(update, context):
-    if ram.check_admin(id = id):
-        admin_data = ram.get_admin(id = id) 
-        where = admin_data['where']
-        action = admin_data['action']
-        name = admin_data['name']
-        date = admin_data['registred']
-        global n
-        if where == 'add_movi':
-            if action == 'avto_add':
-                n+=1
+    # id = update.message.chat.id
+    # if ram.check_admin(id = id):
+    #     admin_data = ram.get_admin(id = id) 
+    #     where = admin_data['where']
+    #     action = admin_data['action']
+    #     name = admin_data['name']
+    #     date = admin_data['registred']
+    #     global n
+    #     # print(where)
+    #     # print(action)
+    #     if where == 'add_movi':
+    #         if action == 'avto_add':
+    print('working...')
+    asyncio.create_task(video_adder)
                 
+
+
+         
         
     # global n
     # n+=1

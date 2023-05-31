@@ -1,4 +1,4 @@
-from telegram import KeyboardButton, ReplyKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardMarkup
 
 
 class Buttons:
@@ -8,11 +8,11 @@ class Buttons:
         if mode == 'user':
             buttons = [[InlineKeyboardButton(text = "📄 Qo'lanma", callback_data = "manual" ), InlineKeyboardButton(text = "⬇️ Ko'proq", callback_data = "more")],
                        [InlineKeyboardButton(text = "🔍 Kino Izlash", switch_inline_query_current_chat = "")]]
-            return buttons
+            return InlineKeyboardMarkup(keyboard = buttons)
         elif mode == 'admin':
             buttons = [[InlineKeyboardButton(text = "📄 Qo'lanma", callback_data = "manual" ), InlineKeyboardButton(text = "⬇️ Ko'proq", callback_data = "more")],
                        [InlineKeyboardButton(text = "🔍 Kino Izlash", switch_inline_query_current_chat = "")]]
-            return buttons
+            return InlineKeyboardMarkup(inline_keyboard = buttons)
     
     def get_headin_more(self, mode = 'admin'):
         if mode == 'user':
@@ -34,19 +34,19 @@ class Buttons:
     def get_menu(self, mode = 'admin'):
         if mode == 'user':
             buttons = [[KeyboardButton(text="🎛 Menu"), KeyboardButton(text = "⚙️ Sozlamalar")]]
-            return buttons
+            return ReplyKeyboardMarkup(keyboard = buttons, resize_keyboard = True)
         elif mode == 'admin':
             buttons =[[KeyboardButton(text = "🎛 Menu")],
                       [KeyboardButton(text = "📂 Media"), KeyboardButton(text = "📦 Review")],
                       [KeyboardButton(text = "✉️ Xabarlar"), KeyboardButton(text = "⚙️ Sozlamalar")],
                       [KeyboardButton(text = "📈 Statistika")]]
-            return buttons
+            return ReplyKeyboardMarkup(keyboard = buttons, resize_keyboard = True)
         
-    def media(self):
+    def get_media(self):
         buttons = [[KeyboardButton(text = "🎬 Kino qo'shish"), KeyboardButton(text = "📺 Serial qo'shish")],
                    [KeyboardButton(text = "🔥 Primyeralarni taxrirlash"), KeyboardButton(text = "🧩 Yangi medialarga   ishlov berish")],
                     [KeyboardButton(text = "⬅️ Orqaga")]]
-        return buttons
+        return ReplyKeyboardMarkup(keyboard = buttons, resize_keyboard = True)
     
     def add_movi(self, mode = 'none'):
         if mode == 'none':
